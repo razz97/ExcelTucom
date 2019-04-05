@@ -2,7 +2,6 @@
     <wb-module deploy-name="ExcelTucom">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/resources"/>
         <property name="context-root" value="ExcelTucom"/>
         <property name="java-output-path" value="/ExcelTucom/build/classes"/>
     </wb-module>
