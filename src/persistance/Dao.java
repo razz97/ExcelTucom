@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -13,6 +16,7 @@ import model.SheetDTO;
 public class Dao {
 	
 	private Workbook workbook;
+	private FormulaEvaluator evaluator;
 	// Home
 	private String path = "C:\\Users\\alex\\Documents\\Eclipse\\datos\\ExcelTucom\\resources\\ShowExcel.xlsx";
 	// Laptop
@@ -21,6 +25,7 @@ public class Dao {
 	public Dao() {
 			try {
 				workbook = WorkbookFactory.create(new File(path));
+				evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 			} catch (EncryptedDocumentException |IOException e) {
 				e.printStackTrace();
 			}
@@ -36,6 +41,15 @@ public class Dao {
 	
 	public Sheet getSheet(int index) {
 		return workbook.getSheetAt(index);
+	}
+
+	public CellValue evaluate(Cell cell) {
+		try {
+			return evaluator.evaluate(cell);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}	
 	
 }

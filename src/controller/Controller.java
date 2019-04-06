@@ -8,6 +8,12 @@ import persistance.Dao;
 public class Controller {
 
 	private Dao dao;
+	private static Controller instance;
+	
+	public static Controller getInstance() {
+		if (instance == null) instance = new Controller();
+		return instance;
+	}
 	
 	public Controller() {
 		dao = new Dao();

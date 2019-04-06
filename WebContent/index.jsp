@@ -1,0 +1,1 @@
+<% response.sendRedirect("ShowExcel?sheet=0"); %>
