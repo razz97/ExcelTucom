@@ -1,5 +1,8 @@
 package controller;
 
+import org.apache.poi.ss.usermodel.Sheet;
+
+import model.SheetDTO;
 import persistance.Dao;
 
 public class Controller {
@@ -10,8 +13,12 @@ public class Controller {
 		dao = new Dao();
 	}
 	
-	public String[] getSheetNames() {
-		return dao.getSheetNames();
+	public SheetDTO[] getDTOSheets() {
+		return dao.getDTOSheets();
+	}
+
+	public Sheet getSheet(int sheetNumber) {
+		return dao.getSheet(sheetNumber);
 	}
 	
 }

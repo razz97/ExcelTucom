@@ -2,7 +2,6 @@ package servlets;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -29,7 +28,18 @@ public class ShowExcel extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setAttribute("sheetNames", controller.getSheetNames());		
+		String paramSheet = request.getParameter("sheet");
+		int sheetNumber;
+		if (paramSheet == null) sheetNumber = 0;
+		else { 
+			try {
+				sheetNumber = Integer.parseInt(paramSheet);			
+			} catch (NumberFormatException e) {
+				sheetNumber = 0;
+			}
+		}
+		request.setAttribute("sheetNames", controller.getDTOSheets());
+		request.setAttribute("sheet", controller.getSheet(sheetNumber));
 		getServletContext().getRequestDispatcher("/jsp/ShowExcel.jsp").forward(request, response);
 	}
 
