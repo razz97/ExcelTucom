@@ -38,8 +38,10 @@ public class ShowExcel extends HttpServlet {
 				sheetNumber = 0;
 			}
 		}
+		
 		request.setAttribute("sheetNames", controller.getDTOSheets());
 		request.setAttribute("sheet", controller.getSheet(sheetNumber));
+		request.setAttribute("sheetActive", sheetNumber);
 		getServletContext().getRequestDispatcher("/jsp/ShowExcel.jsp").forward(request, response);
 	}
 

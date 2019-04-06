@@ -3,7 +3,7 @@ package persistance;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -19,11 +19,11 @@ public class Dao {
 	//private String path = "/home/alex/Eclipse/ExcelTucom/resources/ShowExcel.xlsx";
 
 	public Dao() {
-        try {
-			workbook = WorkbookFactory.create(new File(path));
-		} catch (InvalidFormatException | IOException e) {
-			e.printStackTrace();
-		}
+			try {
+				workbook = WorkbookFactory.create(new File(path));
+			} catch (EncryptedDocumentException |IOException e) {
+				e.printStackTrace();
+			}
 	}
 	
 	public SheetDTO[] getDTOSheets() {
