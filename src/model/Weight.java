@@ -4,10 +4,12 @@ public class Weight {
 	
 	private double value;
 	private String name;
+	private String shorthand;
 	
-	public Weight(String name, double value) {
+	public Weight(String name, String shorthand, double value) {
 		this.value = value;
 		this.name = name;
+		this.shorthand = shorthand;
 	}
 	
 	public String getName() {
@@ -17,12 +19,9 @@ public class Weight {
 	public double getValue() {
 		return value;
 	}
-
-	@Override
-	public String toString() {
-		return "Weight [value=" + value + ", name=" + name + "]";
-	}
 	
-	
+	public String getShorthand() {
+		return shorthand;
+	}	
 
 }

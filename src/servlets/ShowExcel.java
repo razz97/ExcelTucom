@@ -25,7 +25,7 @@ public class ShowExcel extends HttpServlet {
      * @see HttpServlet#HttpServlet()
      */
     public ShowExcel() {
-    	controller = new Controller();
+    	controller = Controller.getInstance();
     }
 
 	/**

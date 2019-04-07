@@ -25,7 +25,7 @@ public class Configuration extends HttpServlet {
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public Configuration() {
-		controller = new Controller();
+		controller = Controller.getInstance();
 	}
 
 	/**
@@ -64,7 +64,6 @@ public class Configuration extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

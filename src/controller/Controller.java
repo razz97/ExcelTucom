@@ -16,11 +16,12 @@ public class Controller {
 	private static Controller instance;
 	
 	public static Controller getInstance() {
-		if (instance == null) instance = new Controller();
+		if (instance == null) 
+			instance = new Controller();
 		return instance;
 	}
 	
-	public Controller() {
+	private Controller() {
 		dao = new Dao();
 	}
 	
@@ -35,11 +36,17 @@ public class Controller {
 	public Weight[] getWeights(Sheet sheet) {
 		Row names = sheet.getRow(0);
 		Row values = sheet.getRow(1);
-		Weight[] weights = new Weight[values.getLastCellNum()-1];
-		for (int i = 2; i < values.getLastCellNum()-1; i++) {
+		Row shorthands = sheet.getRow(2);
+		Weight[] weights = new Weight[values.getLastCellNum()];
+		for (int i = 2; i < values.getLastCellNum(); i++) {
 			Cell c = values.getCell(i); 
-			if (c != null && c.getCellType() == CellType.NUMERIC) 
-				weights[i-2] = new Weight(names.getCell(i).getStringCellValue(), c.getNumericCellValue());
+			if (c != null && c.getCellType() == CellType.NUMERIC) {
+				String name = names.getCell(i).getStringCellValue();
+				String shorthand = shorthands.getCell(i).getStringCellValue();
+				double value = c.getNumericCellValue();
+				weights[i-2] = new Weight(name, shorthand, value);
+			}
+				
 		}
 		return weights;
 	}

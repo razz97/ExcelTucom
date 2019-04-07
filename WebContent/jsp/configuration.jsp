@@ -30,37 +30,33 @@
 			<div class="col-md-2"></div>
 		</div>
 		<div class="row">
-		<div class="col-md-2"></div>
-		<form class="col-md-8">
-			<%
-			Sheet sheet = (Sheet) request.getAttribute("sheet");
-			if (sheet != null) {
-				Weight[] weights = Controller.getInstance().getWeights(sheet);
-				for (Weight weight: weights) {
-					if (weight != null) {
-			%>
-					<div class="form-group row">
-						<div class="col-md-6">
-							<label for="name">Field name</label>
-							<input id="name" class="form-control" value="<%= weight.getName()  %>" />
-						</div>
-						<div class="col-md-6">
-							<label for="weight">Weight</label>
-							<input id="weight" class="form-control" value="<%= weight.getValue()  %>" />
-						</div>		
-					</div>				
-			<% }}} %>
-		</form>
-		<div class="col-md-2"></div>
+			<div class="col-md-2"></div>
+				<form class="col-md-8" method="POST">
+					<table class="table table-striped table-bordered">
+						<tr><th>Field name</th><th>Shorthand</th><th>Value</th></tr>
+							<% Sheet sheet = (Sheet) request.getAttribute("sheet");
+							if (sheet != null) {
+								Weight[] weights = Controller.getInstance().getWeights(sheet);
+								boolean isNotaFinal;
+								for (Weight weight: weights) {
+									if (weight != null) {
+										isNotaFinal = weight.getName().equals("NOTA FINAL");%>
+								<tr>
+									<td><input name="name" class="form-control" <%= isNotaFinal ? "disabled" : "" %> value="<%= weight.getName() %>"/></td>
+									<td><input name="short" class="form-control" <%= isNotaFinal ? "disabled" : ""  %> value="<%= weight.getShorthand() %>"/></td>		
+									<td><input name="weight" class="form-control" <%= isNotaFinal ? "disabled" : ""  %> value="<%= weight.getValue()  %>" /></td>		
+								</tr>				
+							<% }}} %>
+					</table>
+				</form>
+			<div class="col-md-2"></div>
 		</div> 
 	</div>
 	<script>
 		function onSelectSheet() {
 			var select = document.getElementById("selectSheet");
 			var selection = select.options[select.selectedIndex].value;
-			window.location
-					.replace("http://localhost:8080/ExcelTucom/config?sheet="
-							+ selection);
+			window.location.href = "/ExcelTucom/config?sheet=" + selection;
 		}
 	</script>
 </body>
