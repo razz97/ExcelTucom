@@ -1,6 +1,8 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.Enumeration;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -50,8 +52,10 @@ public class Configuration extends HttpServlet {
 		} catch (InvalidActionException e) {
 			exception = e;
 		}
-		if (exception != null) request.setAttribute("error", exception.getMessage());
-		request.setAttribute("sheet", sheet);
+		if (exception == null)
+			request.setAttribute("sheet", sheet);
+		else
+			request.setAttribute("error", exception.getMessage());
 		request.setAttribute("sheetNames", controller.getDTOSheets());
 		request.setAttribute("sheetActive", -1);
 		request.setAttribute("configActiveSheet", sheetNumber);
@@ -64,6 +68,38 @@ public class Configuration extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		Enumeration<String> parameterNames = request.getParameterNames();
+		int sheetNum = 0;
+		try {
+			sheetNum = Integer.parseInt(request.getParameter("sheet"));
+		} catch(NumberFormatException e) {
+			e.printStackTrace();
+		}
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			if (paramName.equals("sheet")) continue;
+			String paramValue = request.getParameter(paramName);
+			String[] splitParamName = paramName.split("-");
+			String weightType = splitParamName[0];
+			int weightIndex = 0;
+			try {
+				weightIndex = Integer.parseInt(splitParamName[1]);
+			} catch(NumberFormatException e ) {
+				e.printStackTrace();
+			}
+			int rowNum = 0;
+			switch (weightType) {
+				case "name": rowNum = 0; break;
+				case "short": rowNum = 2; break;
+				case "value": rowNum = 1;break;
+			}
+			controller.updateCell(sheetNum, rowNum, weightIndex, paramValue);
+		}
+		try {
+			controller.commit();
+		} catch (InvalidActionException e) {
+			e.printStackTrace();
+		}
 		doGet(request, response);
 	}
 

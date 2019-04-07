@@ -32,22 +32,26 @@
 		<div class="row">
 			<div class="col-md-2"></div>
 				<form class="col-md-8" method="POST">
+				<% Sheet sheet = (Sheet) request.getAttribute("sheet");
+							if (sheet != null) { %>
 					<table class="table table-striped table-bordered">
 						<tr><th>Field name</th><th>Shorthand</th><th>Value</th></tr>
-							<% Sheet sheet = (Sheet) request.getAttribute("sheet");
-							if (sheet != null) {
+							<% 
 								Weight[] weights = Controller.getInstance().getWeights(sheet);
 								boolean isNotaFinal;
 								for (Weight weight: weights) {
 									if (weight != null) {
 										isNotaFinal = weight.getName().equals("NOTA FINAL");%>
 								<tr>
-									<td><input name="name" class="form-control" <%= isNotaFinal ? "disabled" : "" %> value="<%= weight.getName() %>"/></td>
-									<td><input name="short" class="form-control" <%= isNotaFinal ? "disabled" : ""  %> value="<%= weight.getShorthand() %>"/></td>		
-									<td><input name="weight" class="form-control" <%= isNotaFinal ? "disabled" : ""  %> value="<%= weight.getValue()  %>" /></td>		
+									<td><input name="name-<%= weight.getColumnIndex() %>" class="form-control" <%= isNotaFinal ? "disabled" : "" %> value="<%= weight.getName() %>"/></td>
+									<td><input name="short-<%= weight.getColumnIndex() %>" class="form-control" <%= isNotaFinal ? "disabled" : ""  %> value="<%= weight.getShorthand() %>"/></td>		
+									<td><input name="value-<%= weight.getColumnIndex() %>" class="form-control" <%= isNotaFinal ? "disabled" : ""  %> value="<%= weight.getValue()  %>" /></td>		
 								</tr>				
-							<% }}} %>
+							<% }} %>
+							<tr><td colspan="3"><input type="submit" class="btn btn-primary form-control" value="SAVE" /></td></tr>
+							<% } %>
 					</table>
+					<input type="hidden" name="sheet" value="<%= activeSheet %>" />
 				</form>
 			<div class="col-md-2"></div>
 		</div> 

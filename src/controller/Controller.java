@@ -44,11 +44,19 @@ public class Controller {
 				String name = names.getCell(i).getStringCellValue();
 				String shorthand = shorthands.getCell(i).getStringCellValue();
 				double value = c.getNumericCellValue();
-				weights[i-2] = new Weight(name, shorthand, value);
+				weights[i-2] = new Weight(name, shorthand, value, i);
 			}
 				
 		}
 		return weights;
+	}
+
+	public void updateCell(int sheetNum, int rowNum, int cellNum, String value) {
+		dao.updateCell(sheetNum, rowNum, cellNum, value);
+	}
+
+	public void commit() throws InvalidActionException {
+		dao.commit();
 	}
 	
 	
