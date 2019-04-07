@@ -1,7 +1,6 @@
 package servlets;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,26 +14,29 @@ import exception.InvalidActionException;
 import exception.InvalidActionException.Tipo;
 
 /**
- * Servlet implementation class ShowExcel
+ * Servlet implementation class Configuration
  */
-@WebServlet("/excel")
-public class ShowExcel extends HttpServlet {
+@WebServlet("/config")
+public class Configuration extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private Controller controller;
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ShowExcel() {
-    	controller = new Controller();
-    }
+	private Controller controller;
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public Configuration() {
+		controller = new Controller();
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		String paramSheet = request.getParameter("sheet");
 		int sheetNumber = 0;
-		Sheet sheet;
+		Sheet sheet = null;
 		Exception exception = null;
 		if (paramSheet != null) {
 			try {
@@ -46,22 +48,22 @@ public class ShowExcel extends HttpServlet {
 		try {
 			sheet = controller.getSheet(sheetNumber);
 		} catch (InvalidActionException e) {
-			sheet = null;
 			exception = e;
 		}
-		if (exception == null)
-			request.setAttribute("sheet", sheet);
-		else
-			request.setAttribute("error", exception.getMessage());
-		request.setAttribute("sheetActive", sheetNumber);
+		if (exception != null) request.setAttribute("error", exception.getMessage());
+		request.setAttribute("sheet", sheet);
 		request.setAttribute("sheetNames", controller.getDTOSheets());
-		getServletContext().getRequestDispatcher("/jsp/excel.jsp").forward(request, response);
+		request.setAttribute("sheetActive", -1);
+		request.setAttribute("configActiveSheet", sheetNumber);
+		getServletContext().getRequestDispatcher("/jsp/configuration.jsp").forward(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

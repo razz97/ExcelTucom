@@ -23,29 +23,31 @@
 			<table class="table table-striped table-bordered col-md-8">
 				<%
 					Sheet sheet = (Sheet) request.getAttribute("sheet");
-					Iterator<Row> rowIterator = sheet.iterator();
-					rowIterator.next();
-					rowIterator.next();
-					while (rowIterator.hasNext()) {
-						Iterator<Cell> cellIterator = rowIterator.next().cellIterator();
-						out.println("<tr>");
-						while (cellIterator.hasNext()) {
-							Cell cell = cellIterator.next();
-							CellType type = cell.getCellType();
-							out.println("<td>");
-							switch (type) {
-							case NUMERIC:
-							case FORMULA:
-								out.println(String.format("%.2f", cell.getNumericCellValue()));
-								break;
-							case STRING:
-								out.println(cell.getRichStringCellValue());
-								break;
-							default:
+					if (sheet != null) {
+						Iterator<Row> rowIterator = sheet.iterator();
+						rowIterator.next();
+						rowIterator.next();
+						while (rowIterator.hasNext()) {
+							Iterator<Cell> cellIterator = rowIterator.next().cellIterator();
+							out.println("<tr>");
+							while (cellIterator.hasNext()) {
+								Cell cell = cellIterator.next();
+								CellType type = cell.getCellType();
+								out.println("<td>");
+								switch (type) {
+								case NUMERIC:
+								case FORMULA:
+									out.println(String.format("%.2f", cell.getNumericCellValue()));
+									break;
+								case STRING:
+									out.println(cell.getRichStringCellValue());
+									break;
+								default:
+								}
+								out.println("</td>");
 							}
-							out.println("</td>");
+							out.println("</tr>");
 						}
-						out.println("</tr>");
 					}
 				%>
 			</table>
