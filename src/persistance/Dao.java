@@ -1,10 +1,9 @@
 package persistance;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -24,11 +23,11 @@ public class Dao {
 	// Laptop
 	// private String path = "/home/alex/Eclipse/ExcelTucom/resources/ShowExcel.xlsx";
 
-	public Dao() {
+	public Dao() throws InvalidActionException {
 		try {
-			workbook = WorkbookFactory.create(new File(path));
+			workbook = WorkbookFactory.create(new FileInputStream(new File(path)));
 		} catch (EncryptedDocumentException | IOException e) {
-			e.printStackTrace();
+			throw new InvalidActionException(Tipo.READ_UNSUCCESSFUL);
 		}
 	}
 
@@ -63,12 +62,10 @@ public class Dao {
 	}
 	
 	public void commit() throws InvalidActionException {
-		try (FileOutputStream fileOut = new FileOutputStream(path + ".new")) {
+		try (FileOutputStream fileOut = new FileOutputStream(new File(path));) {
 		    workbook.write(fileOut);
-			//Files.delete(Paths.get(path));
-			//Files.move(Paths.get(path + ".new"), Paths.get(path));
 		} catch (IOException e) {
-			throw new InvalidActionException(Tipo.WRITE_UNSUCCESSFULL);
+			throw new InvalidActionException(Tipo.WRITE_UNSUCCESSFUL);
 		}
 	}
 

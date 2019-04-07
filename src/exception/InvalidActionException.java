@@ -19,7 +19,9 @@ public class InvalidActionException extends Exception {
 	public enum Tipo {
 		SHEET_NOT_FOUND("No sheet was found in the specified index."),
 		SHEET_PARAM_NOT_INTEGER("Parameter 'sheet' must be an integer."), 
-		WRITE_UNSUCCESSFULL("There was an error writing into the excel file.");
+		WRITE_UNSUCCESSFUL("There was an error writing into the excel file."), 
+		READ_UNSUCCESSFUL("There was an error reading the excel file."), 
+		CELL_INDEX_NOT_INTEGER("Parameter 'cell index' must be an integer.");
 		
 		private String message;
 

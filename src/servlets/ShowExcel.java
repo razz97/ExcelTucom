@@ -1,6 +1,8 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,39 +22,40 @@ import exception.InvalidActionException.Tipo;
 @WebServlet("/excel")
 public class ShowExcel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private Controller controller;
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ShowExcel() {
-    	controller = Controller.getInstance();
-    }
+    private List<String> errors = new ArrayList<>();
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Controller controller;
+		try {
+			controller = Controller.getInstance();
+		} catch (InvalidActionException e) {
+			errors.add(e.getMessage());
+			getServletContext().getRequestDispatcher("/jsp/excel.jsp").forward(request, response);
+			return;
+		}
 		String paramSheet = request.getParameter("sheet");
 		int sheetNumber = 0;
 		Sheet sheet;
-		Exception exception = null;
 		if (paramSheet != null) {
 			try {
 				sheetNumber = Integer.parseInt(paramSheet);			
 			} catch (NumberFormatException e) {
-				exception = new InvalidActionException(Tipo.SHEET_PARAM_NOT_INTEGER);
+				errors.add(new InvalidActionException(Tipo.SHEET_PARAM_NOT_INTEGER).getMessage());
 			}
 		}
 		try {
 			sheet = controller.getSheet(sheetNumber);
 		} catch (InvalidActionException e) {
 			sheet = null;
-			exception = e;
+			errors.add(e.getMessage());
 		}
-		if (exception == null)
+		if (errors.isEmpty())
 			request.setAttribute("sheet", sheet);
 		else
-			request.setAttribute("error", exception.getMessage());
+			request.setAttribute("errors", errors);
 		request.setAttribute("sheetActive", sheetNumber);
 		request.setAttribute("sheetNames", controller.getDTOSheets());
 		getServletContext().getRequestDispatcher("/jsp/excel.jsp").forward(request, response);

@@ -1,8 +1,9 @@
+<%@page import="java.util.List"%>
 <%@page import="model.SheetDTO"%>
 <%
 	SheetDTO[] sheets = (SheetDTO[]) request.getAttribute("sheetNames");
 	int sheetActive = (int) request.getAttribute("sheetActive");
-	String error = (String) request.getAttribute("error");
+	List<String> errors = (List<String>) request.getAttribute("errors");
 	if (sheets != null) {
 %>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -20,9 +21,9 @@
 		</ul>
 	</div>
 </nav>
-<% 
-} if (error != null) { 
-		out.println("<div class=\"alert alert-danger\" role=\"alert\">");
-		out.println(error + "<br>");
-	  	out.println("<a href=\"/ExcelTucom\">Click here to go to the main page</a></div>");
-} %>
+<% } if (errors != null) {
+	for (String error : errors) { %>
+	<div class="alert alert-danger" role="alert"><%= error %><br></div>
+  <% } %>
+<div class="alert alert-danger" role="alert"><a href="/ExcelTucom">Main page</a></div>
+<% } %>

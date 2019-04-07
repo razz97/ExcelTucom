@@ -5,13 +5,13 @@ public class Weight {
 	private double value;
 	private String name;
 	private String shorthand;
-	private int columnIndex;
+	private int cellIndex;
 	
-	public Weight(String name, String shorthand, double value, int columnIndex) {
+	public Weight(String name, String shorthand, double value, int cellIndex) {
 		this.value = value;
 		this.name = name;
 		this.shorthand = shorthand;
-		this.columnIndex = columnIndex;
+		this.cellIndex = cellIndex;
 	}
 	
 	public String getName() {
@@ -26,8 +26,8 @@ public class Weight {
 		return shorthand;
 	}	
 	
-	public int getColumnIndex() {
-		return columnIndex;
+	public int getCellIndex() {
+		return cellIndex;
 	}
 
 }

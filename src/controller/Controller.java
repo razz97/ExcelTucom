@@ -15,13 +15,13 @@ public class Controller {
 	private Dao dao;
 	private static Controller instance;
 	
-	public static Controller getInstance() {
+	public static Controller getInstance() throws InvalidActionException {
 		if (instance == null) 
 			instance = new Controller();
 		return instance;
 	}
 	
-	private Controller() {
+	private Controller() throws InvalidActionException {
 		dao = new Dao();
 	}
 	

@@ -43,9 +43,9 @@
 									if (weight != null) {
 										isNotaFinal = weight.getName().equals("NOTA FINAL");%>
 								<tr>
-									<td><input name="name-<%= weight.getColumnIndex() %>" class="form-control" <%= isNotaFinal ? "disabled" : "" %> value="<%= weight.getName() %>"/></td>
-									<td><input name="short-<%= weight.getColumnIndex() %>" class="form-control" <%= isNotaFinal ? "disabled" : ""  %> value="<%= weight.getShorthand() %>"/></td>		
-									<td><input name="value-<%= weight.getColumnIndex() %>" class="form-control" <%= isNotaFinal ? "disabled" : ""  %> value="<%= weight.getValue()  %>" /></td>		
+									<td><input name="name-<%=weight.getCellIndex()%>" class="form-control" <%=isNotaFinal ? "disabled" : ""%> value="<%=weight.getName()%>"/></td>
+									<td><input name="short-<%=weight.getCellIndex()%>" class="form-control" <%=isNotaFinal ? "disabled" : ""%> value="<%=weight.getShorthand()%>"/></td>		
+									<td><input name="value-<%=weight.getCellIndex()%>" class="form-control" <%=isNotaFinal ? "disabled" : ""  %> value="<%= weight.getValue()  %>" /></td>		
 								</tr>				
 							<% }} %>
 							<tr><td colspan="3"><input type="submit" class="btn btn-primary form-control" value="SAVE" /></td></tr>
