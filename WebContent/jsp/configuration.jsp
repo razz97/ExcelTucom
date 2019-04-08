@@ -18,14 +18,14 @@
 		<div class="form-group row">
 			<div class="col-md-2"></div>
 			<label for="selectSheet" class="col-md-1">Select a sheet:</label> 
-			<select class="col-md-7" id="selectSheet" onChange="onSelectSheet()" class="form-control">
-				<%
-					SheetDTO[] sheets = (SheetDTO[]) request.getAttribute("sheetNames");
+			<select class="col-md-7" onChange="window.location.href ='/ExcelTucom/config?sheet=' + this.options[this.selectedIndex].value" class="form-control">
+				<%  SheetDTO[] sheets = (SheetDTO[]) request.getAttribute("sheetNames");
 					int activeSheet = (int) request.getAttribute("configActiveSheet");
-					for (SheetDTO tmpSheet : sheets) {
-						out.println("<option value='" + tmpSheet.getIndex() + "' "+ (tmpSheet.getIndex() == activeSheet? "selected" : "") +">" + tmpSheet.getTitle() + "</option>");
-					}
-				%>
+					for (SheetDTO tmpSheet : sheets) { %>
+						<option value="<%=tmpSheet.getIndex()%>"  <%=tmpSheet.getIndex() == activeSheet? "selected" : "" %>>
+							<%= tmpSheet.getTitle() %>
+						</option>
+				<% } %>
 			</select>
 			<div class="col-md-2"></div>
 		</div>
@@ -43,9 +43,26 @@
 									if (weight != null) {
 										isNotaFinal = weight.getName().equals("NOTA FINAL");%>
 								<tr>
-									<td><input name="name-<%=weight.getCellIndex()%>" class="form-control" <%=isNotaFinal ? "disabled" : ""%> value="<%=weight.getName()%>"/></td>
-									<td><input name="short-<%=weight.getCellIndex()%>" class="form-control" <%=isNotaFinal ? "disabled" : ""%> value="<%=weight.getShorthand()%>"/></td>		
-									<td><input name="value-<%=weight.getCellIndex()%>" class="form-control" <%=isNotaFinal ? "disabled" : ""  %> value="<%= weight.getValue()  %>" /></td>		
+									<td>
+										<input name="name-<%=weight.getCellIndex()%>" 
+											class="form-control"
+											<%=isNotaFinal ? "disabled" : ""%> 
+											value="<%=weight.getName()%>"/>
+									</td>
+									<td>
+										<input name="short-<%=weight.getCellIndex()%>" 
+											class="form-control" 
+											<%=isNotaFinal ? "disabled" : ""%> 
+											value="<%=weight.getShorthand()%>"/>
+									</td>		
+									<td>
+										<input name="value-<%=weight.getCellIndex()%>" 
+											type="number" 
+											class="form-control <%=isNotaFinal ? "" : "weight" %>" 
+											<%=isNotaFinal ? "disabled id='notaFinal'" : ""%> 
+											value="<%=weight.getValue()%>"
+											onChange="updateNotaFinal()" />
+									</td>		
 								</tr>				
 							<% }} %>
 							<tr><td colspan="3"><input type="submit" class="btn btn-primary form-control" value="SAVE" /></td></tr>
@@ -57,10 +74,10 @@
 		</div> 
 	</div>
 	<script>
-		function onSelectSheet() {
-			var select = document.getElementById("selectSheet");
-			var selection = select.options[select.selectedIndex].value;
-			window.location.href = "/ExcelTucom/config?sheet=" + selection;
+		function updateNotaFinal() {
+			var count = 0;
+			$(".weight").each((i,obj) => count += parseInt(obj.value));
+			$("#notaFinal").val(count);
 		}
 	</script>
 </body>

@@ -1,17 +1,13 @@
 package servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.poi.ss.usermodel.Sheet;
 
 import controller.Controller;
 import exception.InvalidActionException;
@@ -23,8 +19,7 @@ import exception.InvalidActionException.Tipo;
 @WebServlet("/config")
 public class Configuration extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private Controller controller;
-	private List<String> errors = new ArrayList<>();
+	private String info;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -36,82 +31,62 @@ public class Configuration extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			controller = Controller.getInstance();
-		} catch (InvalidActionException e) {
-//			errors.add(e.getMessage());
-//			getServletContext().getRequestDispatcher("/jsp/excel.jsp").forward(request, response);
-//			return;
+			Controller controller = Controller.getInstance();
+			int sheetNumber =  request.getParameter("sheet") == null ? 0 : Integer.parseInt(request.getParameter("sheet"));
+			request.setAttribute("info", info);
+			info = null;
+			request.setAttribute("sheet", controller.getSheet(sheetNumber));
+			request.setAttribute("sheetNames", controller.getDTOSheets());
+			request.setAttribute("sheetActive", -1);
+			request.setAttribute("configActiveSheet", sheetNumber);
+			getServletContext().getRequestDispatcher("/jsp/configuration.jsp").forward(request, response);
+		} catch (InvalidActionException ex) {
+			errorResponse(request, response, ex.getMessage());
+		} catch (NumberFormatException ex) {
+			errorResponse(request, response, Tipo.SHEET_PARAM_NOT_INTEGER.getMessage());
 		}
-		String paramSheet = request.getParameter("sheet");
-		int sheetNumber = 0;
-		Sheet sheet = null;
-		if (paramSheet != null) {
-			try {
-				sheetNumber = Integer.parseInt(paramSheet);			
-			} catch (NumberFormatException e) {
-				errors.add(new InvalidActionException(Tipo.SHEET_PARAM_NOT_INTEGER).getMessage());
-			}
-		}
-		try {
-			sheet = controller.getSheet(sheetNumber);
-		} catch (InvalidActionException e) {
-			errors.add(e.getMessage());
-		}
-		if (errors.isEmpty())
-			request.setAttribute("sheet", sheet);
-		else
-			request.setAttribute("errors", errors);
-		request.setAttribute("sheetNames", controller.getDTOSheets());
-		request.setAttribute("sheetActive", -1);
-		request.setAttribute("configActiveSheet", sheetNumber);
-		getServletContext().getRequestDispatcher("/jsp/configuration.jsp").forward(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Controller controller;
 		try {
 			controller = Controller.getInstance();
-		} catch (InvalidActionException e) {
-			// TODO: handle exception
+			int sheetNum = Integer.parseInt(request.getParameter("sheet"));
+			Enumeration<String> paramNames = request.getParameterNames();
+			while (paramNames.hasMoreElements()) 
+				handlePostParam(request, paramNames.nextElement(), sheetNum);			
+			 controller.commit();
+			 info = "Sheet updated successfully";
+			 doGet(request, response);
+		} catch (InvalidActionException ex) { 
+			errorResponse(request, response, ex.getMessage()); 
+		} catch (NumberFormatException | NullPointerException ex) {
+			errorResponse(request, response, Tipo.WRONG_POST_PARAM.getMessage());
 		}
-		Enumeration<String> parameterNames = request.getParameterNames();
-		int sheetNum = 0;
-		try {
-			sheetNum = Integer.parseInt(request.getParameter("sheet"));
-		} catch(NumberFormatException e) {
-			errors.add(new InvalidActionException(Tipo.SHEET_PARAM_NOT_INTEGER).getMessage());
+	}
+	
+	private void handlePostParam(HttpServletRequest request, String paramName, int sheetNum) throws InvalidActionException {
+		if (paramName.equals("sheet")) return;
+		String[] splitParamName = paramName.split("-");
+		int rowNum;
+		switch (splitParamName[0]) {
+			case "name": rowNum = 0; break;
+			case "short": rowNum = 2; break;
+			case "value": rowNum = 1; break;
+			default: throw new InvalidActionException(Tipo.WRONG_POST_PARAM);
 		}
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			if (paramName.equals("sheet")) 
-				continue;
-			String paramValue = request.getParameter(paramName);
-			String[] splitParamName = paramName.split("-");
-			String weightType = splitParamName[0];
-			int weightIndex = 0;
-			try {
-				weightIndex = Integer.parseInt(splitParamName[1]);
-			} catch(NumberFormatException e ) {
-				errors.add(new InvalidActionException(Tipo.CELL_INDEX_NOT_INTEGER).getMessage());
-			}
-			int rowNum = 0;
-			switch (weightType) {
-				case "name": rowNum = 0; break;
-				case "short": rowNum = 2; break;
-				case "value": rowNum = 1;break;
-			}
-			controller.updateCell(sheetNum, rowNum, weightIndex, paramValue);
-		}
-		try { controller.commit(); }
-		catch (InvalidActionException e) { errors.add(e.getMessage()); }
-		doGet(request, response);
+		Controller.getInstance().updateCell(sheetNum, rowNum, Integer.parseInt(splitParamName[1]),  request.getParameter(paramName));
+	}
+	
+	protected void errorResponse(HttpServletRequest request, HttpServletResponse response, String error) throws ServletException, IOException {
+		request.setAttribute("error", error);
+		getServletContext().getRequestDispatcher("/jsp/error.jsp").forward(request, response);
 	}
 
 }

@@ -21,12 +21,16 @@ public class InvalidActionException extends Exception {
 		SHEET_PARAM_NOT_INTEGER("Parameter 'sheet' must be an integer."), 
 		WRITE_UNSUCCESSFUL("There was an error writing into the excel file."), 
 		READ_UNSUCCESSFUL("There was an error reading the excel file."), 
-		CELL_INDEX_NOT_INTEGER("Parameter 'cell index' must be an integer.");
+		WRONG_POST_PARAM("Wrong post param, try using the form instead of sending request manually.");
 		
 		private String message;
 
 		Tipo(String message) {
 			this.message = message;
+		}
+		
+		public String getMessage() {
+			return message;
 		}
 	}
 
