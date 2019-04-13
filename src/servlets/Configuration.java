@@ -32,6 +32,9 @@ public class Configuration extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if (request.getParameter("delete") != null && request.getAttribute("deleted") == null) {
+			doDelete(request, response); return;
+		}
 		try {
 			Controller controller = Controller.getInstance();
 			int sheetNumber =  request.getParameter("sheet") == null ? 0 : Integer.parseInt(request.getParameter("sheet"));
@@ -54,9 +57,8 @@ public class Configuration extends HttpServlet {
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Controller controller;
 		try {
-			controller = Controller.getInstance();
+			Controller controller = Controller.getInstance();
 			int sheetNum = Integer.parseInt(request.getParameter("sheet"));
 			Enumeration<String> paramNames = request.getParameterNames();
 			while (paramNames.hasMoreElements()) 
@@ -89,4 +91,21 @@ public class Configuration extends HttpServlet {
 		getServletContext().getRequestDispatcher("/jsp/error.jsp").forward(request, response);
 	}
 
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			Controller controller = Controller.getInstance();
+			int sheetNum = Integer.parseInt(request.getParameter("sheet"));
+			int column = Integer.parseInt(request.getParameter("column"));
+			controller.deleteColumn(sheetNum, column);
+			controller.commit();
+			info = "Row deleted successfully.";
+			request.setAttribute("deleted", true);
+			doGet(request, response);
+		} catch (InvalidActionException ex) { 
+			errorResponse(request, response, ex.getMessage()); 
+		} catch (NumberFormatException | NullPointerException ex) {
+			errorResponse(request, response, Tipo.WRONG_DELETE_PARAM.getMessage());
+		}
+	}
 }

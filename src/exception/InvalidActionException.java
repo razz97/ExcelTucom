@@ -2,9 +2,7 @@ package exception;
 
 
 /**
- * Excepcion que denota un error en runtime provocado por el usuario.
- * El programa deberia poder continuar despues de su ejecución.
- * 
+ * Custom exception class, represents that there was an error either caused by the user or by an excel file.
  * @author razz97
  */
 public class InvalidActionException extends Exception {
@@ -12,8 +10,8 @@ public class InvalidActionException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Tipo de la excepcion.
-	 * 
+	 * Tye of an InvalidActionException.
+	 * Contains the message to show to the user.
 	 * @author razz97
 	 */
 	public enum Tipo {
@@ -21,7 +19,8 @@ public class InvalidActionException extends Exception {
 		SHEET_PARAM_NOT_INTEGER("Parameter 'sheet' must be an integer."), 
 		WRITE_UNSUCCESSFUL("There was an error writing into the excel file."), 
 		READ_UNSUCCESSFUL("There was an error reading the excel file."), 
-		WRONG_POST_PARAM("Wrong post param, try using the form instead of sending request manually.");
+		WRONG_POST_PARAM("Wrong post param, try using the form instead of sending request manually."), 
+		WRONG_DELETE_PARAM("Wrong delete param, try using the form instead of sending request manuallly");
 		
 		private String message;
 

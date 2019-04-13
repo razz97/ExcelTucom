@@ -1,5 +1,11 @@
 package model;
 
+/**
+ * Represents a weight of a column in an excel file.
+ * It contains a value, a name, a shorthand, and the index of the column that represents.
+ * @author alex
+ *
+ */
 public class Weight {
 	
 	private double value;

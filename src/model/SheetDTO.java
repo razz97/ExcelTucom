@@ -1,5 +1,10 @@
 package model;
-
+/**
+ * An instance of this class represents a sheet of an excel file,
+ * it serves as a container to store its index and title.
+ * @author alex
+ *
+ */
 public class SheetDTO {
 
 	private String title;

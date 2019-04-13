@@ -35,12 +35,12 @@
 				<% Sheet sheet = (Sheet) request.getAttribute("sheet");
 							if (sheet != null) { %>
 					<table class="table table-striped table-bordered">
-						<tr><th>Field name</th><th>Shorthand</th><th>Value</th></tr>
+						<tr><th>Field name</th><th>Shorthand</th><th>Value</th><th></th></tr>
 							<% 
 								Weight[] weights = Controller.getInstance().getWeights(sheet);
 								boolean isNotaFinal;
 								for (Weight weight: weights) {
-									if (weight != null) {
+									if (weight != null && !weight.getName().equals("COMENTARIOS")) {
 										isNotaFinal = weight.getName().equals("NOTA FINAL");%>
 								<tr>
 									<td>
@@ -62,7 +62,12 @@
 											<%=isNotaFinal ? "disabled id='notaFinal'" : ""%> 
 											value="<%=weight.getValue()%>"
 											onChange="updateNotaFinal()" />
-									</td>		
+									</td>	
+									<td>
+										<input type="hidden" name="sheet" value="<%=activeSheet%>" />
+										<input type="hidden" name="column" value="<%=weight.getCellIndex()%>" />
+										<button type="button" class="close" aria-label="delete" onclick="window.location.href ='/ExcelTucom/config?sheet=<%=activeSheet%>&delete=true&column=<%=weight.getCellIndex()%>'"><span aria-hidden="true">&times;</span></button>
+									</td>	
 								</tr>				
 							<% }} %>
 							<tr><td colspan="3"><input type="submit" class="btn btn-primary form-control" value="SAVE" /></td></tr>
@@ -76,7 +81,7 @@
 	<script>
 		function updateNotaFinal() {
 			var count = 0;
-			$(".weight").each((i,obj) => count += parseInt(obj.value));
+			$(".weight").each((i,obj) => count += parseFloat(obj.value));
 			$("#notaFinal").val(count);
 		}
 	</script>

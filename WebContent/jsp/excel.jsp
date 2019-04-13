@@ -1,7 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import="controller.Controller"%>
-<%@page import="org.apache.poi.ss.usermodel.CellType"%>
 <%@page import="org.apache.poi.ss.usermodel.Cell"%>
+<%@page import="org.apache.poi.ss.usermodel.CellType"%>
 <%@page import="org.apache.poi.ss.usermodel.Row"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="org.apache.poi.ss.usermodel.Sheet"%>
@@ -34,15 +33,15 @@
 								Cell cell = cellIterator.next();
 								CellType type = cell.getCellType();
 								out.println("<td>");
-								switch (type) {
-								case NUMERIC:
-								case FORMULA:
-									out.println(String.format("%.2f", cell.getNumericCellValue()));
-									break;
-								case STRING:
-									out.println(cell.getRichStringCellValue());
-									break;
-								default:
+									switch (type) {
+									case NUMERIC:
+									case FORMULA:
+										out.println(String.format("%.2f", cell.getNumericCellValue()));
+										break;
+									case STRING:
+										out.println(cell.getRichStringCellValue());
+										break;
+									default:
 								}
 								out.println("</td>");
 							}
