@@ -34,8 +34,6 @@ public class Configuration extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (request.getParameter("delete") != null) {
 			doDelete(request, response); return;
-		} if (request.getParameter("update") != null) {
-			doPut(request, response); return;
 		}
 		// GET VALUES
 		try {
@@ -60,6 +58,9 @@ public class Configuration extends HttpServlet {
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if (request.getParameter("update") != null) {
+			doPut(request, response); return;
+		}
 		// ADD COLUMN
 		try {
 			Controller controller = Controller.getInstance();
@@ -79,7 +80,7 @@ public class Configuration extends HttpServlet {
 	}
 	
 	private void handlePostParam(HttpServletRequest request, String paramName, int sheetNum) throws InvalidActionException {
-		if (paramName.equals("sheet")) return;
+		if (paramName.equals("sheet") || paramName.equals("update")) return;
 		String[] splitParamName = paramName.split("-");
 		int rowNum;
 		switch (splitParamName[0]) {

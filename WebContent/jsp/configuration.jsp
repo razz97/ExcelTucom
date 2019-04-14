@@ -43,8 +43,6 @@
 					Sheet sheet = (Sheet) request.getAttribute("sheet");
 					if (sheet != null) {
 				%>
-				<button type="button" class="btn btn-primary" data-toggle="modal"
-					data-target="#addColumnModal">Add column</button>
 				<table class="table table-striped table-bordered">
 					<tr>
 						<th>Field name</th>
@@ -70,7 +68,7 @@
 							type="number"
 							class="form-control <%=isNotaFinal ? "" : "weight"%>"
 							<%=isNotaFinal ? "disabled id='notaFinal'" : ""%>
-							value="<%=weight.getValue()%>" onChange="updateNotaFinal()" /></td>
+							value="<%=weight.getValue()%>" /></td>
 						<td style="text-align: center"><input type="hidden"
 							name="sheet" value="<%=activeSheet%>" />
 							<button type="button" class="close" style="float: inherit"
@@ -84,10 +82,17 @@
 					%>
 					<tr>
 						<td colspan="4">
-							<input type="hidden" name="update" value="true">
-							<input type="submit" class="btn btn-primary form-control" value="SAVE" />
+							<button type="button" class="btn btn-primary form-control" data-target="#addColumnModal" data-toggle="modal">ADD COLUMN</button>
 						</td>
 					</tr>
+					<tr>
+						<td colspan="4">
+							<input type="hidden" name="update" value="true">
+							<input type="submit" class="btn btn-success form-control" value="SAVE" />
+						</td>
+					</tr>
+
+					
 					<%
 						}
 					%>
@@ -108,37 +113,30 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
+				<form method="POST" id="columnForm">
 				<div class="modal-body">
-					<form method="POST" id="columnForm">
 						<input type="hidden" name="sheet" value="<%= activeSheet %>">
 						<div class="form-group">
 							<label for="name" class="col-form-label">Field name:</label>
-							<input type="text" class="form-control" id="name" name="name">
+							<input type="text" class="form-control" id="name" name="name" required>
 						</div>
 						<div class="form-group">
 							<label for="short" class="col-form-label">Shorthand:</label>
-							<input type="text" class="form-control" id="short" name="short">
+							<input type="text" class="form-control" id="short" name="short" required>
 						</div>
 						<div class="form-group">
 							<label for="value" class="col-form-label">Weight:</label>
-							<input type="text" class="form-control" id="value" name="value">
+							<input type="text" class="form-control" id="value" name="value" required>
 						</div>
-					</form>
+					
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" id="btnSubmitColumn">Submit</button>
+					<button type="submit" class="btn btn-primary" id="btnSubmitColumn">Submit</button>
 				</div>
+				</form>
 			</div>
 		</div>
 	</div>
-	<script>
-		function updateNotaFinal() {
-			var count = 0;
-			$(".weight").each((i,obj) => count += parseFloat(obj.value));
-			$("#notaFinal").val(count);
-		}
-		$("#btnSubmitColumn").click(() => $("#columnForm").submit());
-	</script>
 </body>
 </html>
