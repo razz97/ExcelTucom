@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -19,6 +21,7 @@ import model.SheetDTO;
 /**
  * Class for accessing and modifying data of an excel file.
  * @author alex
+ * 
  */
 public class Dao {
 
@@ -157,5 +160,31 @@ public class Dao {
             default:
        }
     }
+
+	/**
+	 * Adds a new column in the end of the specified sheet.
+	 * @param sheetNum - sheet index.
+	 * @param name - name of column
+	 * @param shorthand - shorthand of column
+	 * @param value - weight for nota final.
+	 */
+	public void addColumn(int sheetNum, String name, String shorthand, double value) {
+		// Create cells first
+		Sheet sheet = workbook.getSheetAt(sheetNum);
+		int lastColumnIndex = sheet.getRow(0).getLastCellNum();
+		Iterator<Row> iterator = sheet.rowIterator();
+	    while (iterator.hasNext())
+	        iterator.next().createCell(lastColumnIndex, CellType.NUMERIC).setCellValue(0.0);
+	    // Fill weights
+	    Cell cellName = sheet.getRow(0).getCell(lastColumnIndex);
+	    cellName.setCellType(CellType.STRING);
+	    cellName.setCellValue(name);
+	    Cell cellValue = sheet.getRow(1).getCell(lastColumnIndex);
+	    cellValue.setCellType(CellType.NUMERIC);
+	    cellValue.setCellValue(value);
+	    Cell cellShort = sheet.getRow(2).getCell(lastColumnIndex);
+	    cellShort.setCellType(CellType.STRING);
+	    cellShort.setCellValue(shorthand);
+	}
 
 }

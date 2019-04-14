@@ -47,7 +47,7 @@ public class Controller {
 
 	/**
 	 * Gets a specific sheet for the excel file.
-	 * @param sheetNumber the index of the sheet.
+	 * @param sheetNumber - the index of the sheet.
 	 * @return the desired sheet.
 	 * @throws InvalidActionException sheet wasn't found.
 	 */
@@ -79,10 +79,10 @@ public class Controller {
 
 	/**
 	 * Updates a cell.
-	 * @param sheetNum sheet index.
-	 * @param rowNum row index.
-	 * @param cellNum column index.
-	 * @param value new value.
+	 * @param sheetNum - sheet index.
+	 * @param rowNum - row index.
+	 * @param cellNum  -column index.
+	 * @param value - new value.
 	 */
 	public void updateCell(int sheetNum, int rowNum, int cellNum, String value) {
 		dao.updateCell(sheetNum, rowNum, cellNum, value);
@@ -98,11 +98,22 @@ public class Controller {
 
 	/**
 	 * Deletes the specified column in the specified sheet.
-	 * @param sheetNum sheet index.
-	 * @param index column index.
+	 * @param sheetNum - sheet index.
+	 * @param index - column index.
 	 */
 	public void deleteColumn(int sheetNum, int index) {
 		dao.deleteColumn(sheetNum, index);
+	}
+
+	/**
+	 * Adds a new column into the specified sheet.
+	 * @param sheetNum - sheet index.
+	 * @param name - name of column
+	 * @param shorthand - shorthand of column
+	 * @param value - weight for nota final.
+	 */
+	public void addColumn(int sheetNum, String name, String shorthand, double value) {
+		dao.addColumn(sheetNum,name,shorthand,value);
 	}
 		
 }

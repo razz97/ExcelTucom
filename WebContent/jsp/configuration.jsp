@@ -43,6 +43,8 @@
 					Sheet sheet = (Sheet) request.getAttribute("sheet");
 					if (sheet != null) {
 				%>
+				<button type="button" class="btn btn-primary" data-toggle="modal"
+					data-target="#addColumnModal">Add column</button>
 				<table class="table table-striped table-bordered">
 					<tr>
 						<th>Field name</th>
@@ -69,23 +71,22 @@
 							class="form-control <%=isNotaFinal ? "" : "weight"%>"
 							<%=isNotaFinal ? "disabled id='notaFinal'" : ""%>
 							value="<%=weight.getValue()%>" onChange="updateNotaFinal()" /></td>
-						<td><input type="hidden" name="sheet"
-							value="<%=activeSheet%>" /> <input type="hidden" name="column"
-							value="<%=weight.getCellIndex()%>" />
-							<button type="button"
-
+						<td style="text-align: center"><input type="hidden"
+							name="sheet" value="<%=activeSheet%>" />
+							<button type="button" class="close" style="float: inherit"
 								onclick="window.location.href ='/ExcelTucom/config?sheet=<%=activeSheet%>&delete=true&column=<%=weight.getCellIndex()%>'">
 								<span aria-hidden="true">&times;</span>
-							</button>
-							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="<%= weight.getName() %>">Add column</button></td>
+							</button></td>
 					</tr>
 					<%
-								}
+						}
 							}
 					%>
 					<tr>
-						<td colspan="3"><input type="submit"
-							class="btn btn-primary form-control" value="SAVE" /></td>
+						<td colspan="4">
+							<input type="hidden" name="update" value="true">
+							<input type="submit" class="btn btn-primary form-control" value="SAVE" />
+						</td>
 					</tr>
 					<%
 						}
@@ -96,33 +97,37 @@
 			<div class="col-md-2"></div>
 		</div>
 	</div>
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+	<div class="modal fade" id="addColumnModal" tabindex="-1" role="dialog"
 		aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">New message</h5>
+					<h5 class="modal-title" id="exampleModalLabel">Add column</h5>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<form>
+					<form method="POST" id="columnForm">
+						<input type="hidden" name="sheet" value="<%= activeSheet %>">
 						<div class="form-group">
-							<label for="recipient-name" class="col-form-label">Recipient:</label>
-							<input type="text" class="form-control" id="recipient-name">
+							<label for="name" class="col-form-label">Field name:</label>
+							<input type="text" class="form-control" id="name" name="name">
 						</div>
 						<div class="form-group">
-							<label for="message-text" class="col-form-label">Message:</label>
-							<textarea class="form-control" id="message-text"></textarea>
+							<label for="short" class="col-form-label">Shorthand:</label>
+							<input type="text" class="form-control" id="short" name="short">
+						</div>
+						<div class="form-group">
+							<label for="value" class="col-form-label">Weight:</label>
+							<input type="text" class="form-control" id="value" name="value">
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Send message</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" id="btnSubmitColumn">Submit</button>
 				</div>
 			</div>
 		</div>
@@ -133,15 +138,7 @@
 			$(".weight").each((i,obj) => count += parseFloat(obj.value));
 			$("#notaFinal").val(count);
 		}
-		$('#exampleModal').on('show.bs.modal', function (event) {
-			  var button = $(event.relatedTarget) // Button that triggered the modal
-			  var recipient = button.data('whatever') // Extract info from data-* attributes
-			  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-			  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-			  var modal = $(this)
-			  modal.find('.modal-title').text('Opened: ' + recipient)
-			  modal.find('.modal-body input').val(recipient)
-			})
+		$("#btnSubmitColumn").click(() => $("#columnForm").submit());
 	</script>
 </body>
 </html>

@@ -32,9 +32,12 @@ public class Configuration extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if (request.getParameter("delete") != null && request.getAttribute("deleted") == null) {
+		if (request.getParameter("delete") != null) {
 			doDelete(request, response); return;
+		} if (request.getParameter("update") != null) {
+			doPut(request, response); return;
 		}
+		// GET VALUES
 		try {
 			Controller controller = Controller.getInstance();
 			int sheetNumber =  request.getParameter("sheet") == null ? 0 : Integer.parseInt(request.getParameter("sheet"));
@@ -57,15 +60,17 @@ public class Configuration extends HttpServlet {
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// ADD COLUMN
 		try {
 			Controller controller = Controller.getInstance();
 			int sheetNum = Integer.parseInt(request.getParameter("sheet"));
-			Enumeration<String> paramNames = request.getParameterNames();
-			while (paramNames.hasMoreElements()) 
-				handlePostParam(request, paramNames.nextElement(), sheetNum);			
-			 controller.commit();
-			 info = "Sheet updated successfully";
-			 doGet(request, response);
+			double value = Double.parseDouble(request.getParameter("value"));
+			String name = request.getParameter("name");
+			String shorthand = request.getParameter("short");
+			controller.addColumn(sheetNum, name, shorthand, value);
+			controller.commit();
+			info = "Column " + name + " added successfully";
+			response.sendRedirect("/ExcelTucom/config?sheet=" + sheetNum);
 		} catch (InvalidActionException ex) { 
 			errorResponse(request, response, ex.getMessage()); 
 		} catch (NumberFormatException | NullPointerException ex) {
@@ -93,6 +98,7 @@ public class Configuration extends HttpServlet {
 
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// DELETE COLUMN
 		try {
 			Controller controller = Controller.getInstance();
 			int sheetNum = Integer.parseInt(request.getParameter("sheet"));
@@ -101,11 +107,30 @@ public class Configuration extends HttpServlet {
 			controller.commit();
 			info = "Row deleted successfully.";
 			request.setAttribute("deleted", true);
-			doGet(request, response);
+			response.sendRedirect("/ExcelTucom/config?sheet=" + sheetNum);
 		} catch (InvalidActionException ex) { 
 			errorResponse(request, response, ex.getMessage()); 
 		} catch (NumberFormatException | NullPointerException ex) {
 			errorResponse(request, response, Tipo.WRONG_DELETE_PARAM.getMessage());
+		}
+	}
+	
+	@Override
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// UPDATE VALUES
+		try {
+			Controller controller = Controller.getInstance();
+			int sheetNum = Integer.parseInt(request.getParameter("sheet"));
+			Enumeration<String> paramNames = request.getParameterNames();
+			while (paramNames.hasMoreElements()) 
+				handlePostParam(request, paramNames.nextElement(), sheetNum);			
+			 controller.commit();
+			 info = "Sheet updated successfully";
+			 response.sendRedirect("/ExcelTucom/config?sheet=" + sheetNum);
+		} catch (InvalidActionException ex) { 
+			errorResponse(request, response, ex.getMessage()); 
+		} catch (NumberFormatException | NullPointerException ex) {
+			errorResponse(request, response, Tipo.WRONG_POST_PARAM.getMessage());
 		}
 	}
 }
