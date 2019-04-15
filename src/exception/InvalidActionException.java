@@ -20,7 +20,8 @@ public class InvalidActionException extends Exception {
 		WRITE_UNSUCCESSFUL("There was an error writing into the excel file."), 
 		READ_UNSUCCESSFUL("There was an error reading the excel file."), 
 		WRONG_POST_PARAM("Wrong post param, try using the form instead of sending request manually."), 
-		WRONG_DELETE_PARAM("Wrong delete param, try using the form instead of sending request manuallly");
+		WRONG_DELETE_PARAM("Wrong delete param, try using the form instead of sending request manuallly"), 
+		ERROR_UPLOADING_FILE("There was an error uploading the requested file.");		
 		
 		private String message;
 

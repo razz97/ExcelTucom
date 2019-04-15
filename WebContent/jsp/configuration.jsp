@@ -115,7 +115,7 @@
 				</div>
 				<form method="POST" id="columnForm">
 				<div class="modal-body">
-						<input type="hidden" name="sheet" value="<%= activeSheet %>">
+						<input type="hidden" name="sheet" value="<%=activeSheet %>">
 						<div class="form-group">
 							<label for="name" class="col-form-label">Field name:</label>
 							<input type="text" class="form-control" id="name" name="name" required>
