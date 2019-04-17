@@ -9,7 +9,7 @@ if (sheets != null) { %>
 	<a class="navbar-brand" href="/ExcelTucom/excel?sheet=0">ExcelTucom</a>
 	<div class="collapse navbar-collapse" id="navbarNav">
 		<ul class="navbar-nav">
-			<li class="nav-item <%=sheetActive == -2 ? "active" : ""%>"><a class="nav-link" href="/ExcelTucom/load">Load Excel</a></li>
+			<li class="nav-item <%=sheetActive == -2 ? "active" : ""%>"><a class="nav-link" href="/ExcelTucom/load">File</a></li>
 			<li class="nav-item <%=sheetActive == -1 ? "active" : ""%>"><a class="nav-link" href="/ExcelTucom/config">Configuration</a></li>
 			<% for (SheetDTO sheet : sheets) { %>
 					<li class="nav-item <%=sheetActive == sheet.getIndex() ? "active" : "" %>">

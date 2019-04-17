@@ -1,5 +1,10 @@
 package controller;
 
+import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -114,6 +119,27 @@ public class Controller {
 	 */
 	public void addColumn(int sheetNum, String name, String shorthand, double value) {
 		dao.addColumn(sheetNum,name,shorthand,value);
+	}
+
+	public String getPath() {
+		return dao.getPath();
+	}
+
+	public String getFileName() {
+		return dao.getFileName();
+	}
+	
+	public void changeFile(String name) throws InvalidActionException {
+		dao.setFilename(name);
+	}
+
+	public List<String> getFileNames() {
+		File[] files = new File(dao.getPath()).listFiles();
+		return Stream.of(files).map(f -> f.getName()).collect(Collectors.toList());
+	}
+
+	public int createNewSheet(String name) {
+		return dao.createNewSheet(name);
 	}
 		
 }

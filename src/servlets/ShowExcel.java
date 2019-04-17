@@ -17,16 +17,15 @@ import exception.InvalidActionException.Tipo;
  */
 @WebServlet("/excel")
 public class ShowExcel extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			Controller controller = Controller.getInstance();
 			int sheetNumber = request.getParameter("sheet") == null ? 0 : Integer.parseInt(request.getParameter("sheet"));
 			request.setAttribute("sheet", controller.getSheet(sheetNumber));
+			request.setAttribute("filename", controller.getFileName());
 			request.setAttribute("sheetActive", sheetNumber);
 			request.setAttribute("sheetNames", controller.getDTOSheets());
 			getServletContext().getRequestDispatcher("/jsp/excel.jsp").forward(request, response);

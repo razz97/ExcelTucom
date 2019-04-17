@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Sheet;
+
 import controller.Controller;
 import exception.InvalidActionException;
 import exception.InvalidActionException.Tipo;
@@ -18,19 +20,11 @@ import exception.InvalidActionException.Tipo;
  */
 @WebServlet("/config")
 public class Configuration extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
 	private String info;
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public Configuration() {
-	}
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (request.getParameter("delete") != null) {
 			doDelete(request, response); return;
@@ -41,7 +35,10 @@ public class Configuration extends HttpServlet {
 			int sheetNumber =  request.getParameter("sheet") == null ? 0 : Integer.parseInt(request.getParameter("sheet"));
 			request.setAttribute("info", info);
 			info = null;
-			request.setAttribute("sheet", controller.getSheet(sheetNumber));
+			Sheet sheet = controller.getSheet(sheetNumber);
+			request.setAttribute("sheet", sheet);
+			request.setAttribute("filename", controller.getFileName());
+			request.setAttribute("weights", controller.getWeights(sheet));
 			request.setAttribute("sheetNames", controller.getDTOSheets());
 			request.setAttribute("sheetActive", -1);
 			request.setAttribute("configActiveSheet", sheetNumber);
@@ -52,14 +49,27 @@ public class Configuration extends HttpServlet {
 			errorResponse(request, response, Tipo.SHEET_PARAM_NOT_INTEGER.getMessage());
 		}
 	}
+	
+	private void createNewSheet(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
+		
+		try {			
+			int sheetNum = Controller.getInstance().createNewSheet(request.getParameter("name"));
+			info = "Sheet added successfully";
+			response.sendRedirect("/ExcelTucom/config?sheet=" + sheetNum);
+		} catch (InvalidActionException ex) { 
+			errorResponse(request, response, ex.getMessage()); 
+		} catch (NullPointerException ex) {
+			errorResponse(request, response, Tipo.INVALID_SHEET_NAME.getMessage());
+		}
+	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (request.getParameter("update") != null) {
 			doPut(request, response); return;
+		}
+		if (request.getParameter("newSheet") != null) {
+			createNewSheet(request, response); return;
 		}
 		// ADD COLUMN
 		try {

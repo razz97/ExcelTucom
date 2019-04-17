@@ -21,7 +21,9 @@ public class InvalidActionException extends Exception {
 		READ_UNSUCCESSFUL("There was an error reading the excel file."), 
 		WRONG_POST_PARAM("Wrong post param, try using the form instead of sending request manually."), 
 		WRONG_DELETE_PARAM("Wrong delete param, try using the form instead of sending request manuallly"), 
-		ERROR_UPLOADING_FILE("There was an error uploading the requested file.");		
+		ERROR_UPLOADING_FILE("There was an error uploading the requested file."), 
+		FILE_EXISTS("File already exists in the server, please upload with different name or select it in upload tab."), 
+		INVALID_SHEET_NAME("Sheet name is invalid.");		
 		
 		private String message;
 

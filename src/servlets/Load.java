@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileExistsException;
 
 import controller.Controller;
 import exception.InvalidActionException;
@@ -23,9 +24,13 @@ import exception.InvalidActionException.Tipo;
 @WebServlet("/load")
 public class Load extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private String info;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
+			request.setAttribute("info", info);
+			info = null;
+			request.setAttribute("files", Controller.getInstance().getFileNames());
 			request.setAttribute("sheetActive", -2);
 			request.setAttribute("sheetNames", Controller.getInstance().getDTOSheets());
 			getServletContext().getRequestDispatcher("/jsp/load.jsp").forward(request, response);
@@ -37,17 +42,19 @@ public class Load extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
+			Controller controller = Controller.getInstance();
 			ServletFileUpload sf = new ServletFileUpload(new DiskFileItemFactory());
-			FileItem file = sf.parseRequest(request).get(0);
-			file.write(new File("C:\\Users\\alex\\Documents\\Eclipse\\datos\\ExcelTucom\\resources\\" + file.getName()));
-			response.sendRedirect("/ExcelTucom");
+			FileItem fileItem = sf.parseRequest(request).get(0);
+			fileItem.write(new File(controller.getPath() + fileItem.getName()));
+			controller.changeFile(fileItem.getName());
+			info = "File " + fileItem.getName() + " uploaded successfully.";
+			response.sendRedirect("/ExcelTucom/load");
 		} catch(InvalidActionException ex) {
 			errorResponse(request, response, ex.getMessage());
-		} catch(NumberFormatException ex) {
-			errorResponse(request, response, Tipo.SHEET_PARAM_NOT_INTEGER.getMessage());
+		} catch(FileExistsException e) {
+			errorResponse(request, response, Tipo.FILE_EXISTS.getMessage());
 		} catch (Exception e) {
-			e.printStackTrace();
-			//errorResponse(request, response, Tipo.ERROR_UPLOADING_FILE.getMessage());
+			errorResponse(request, response, Tipo.ERROR_UPLOADING_FILE.getMessage());
 		}
 	}
 	

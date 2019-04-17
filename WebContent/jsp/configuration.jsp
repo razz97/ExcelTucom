@@ -12,7 +12,7 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-2"></div>
-			<h1 class="col-md-8" style="text-align: center">Configuration</h1>
+			<h1 class="col-md-8" style="text-align: center">Configuration - <%= request.getAttribute("filename") %></h1>
 			<div class="col-md-2"></div>
 		</div>
 		<div class="form-group row">
@@ -30,10 +30,17 @@
 					<%=tmpSheet.getIndex() == activeSheet ? "selected" : ""%>>
 					<%=tmpSheet.getTitle()%>
 				</option>
-				<%
-					}
-				%>
+				<% } %>
 			</select>
+			<div class="col-md-2"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-2"></div>
+				<form class="col-md-8" method="POST">
+					<input type="hidden" name="newSheet" value="true">
+					<input type="text" name="name" placeholder="Sheet name" class="col-md-8" required>
+					<input type="submit" class="col-md-3 btn btn-primary" style="margin: 20px;" value="Add new sheet">
+				</form>
 			<div class="col-md-2"></div>
 		</div>
 		<div class="row">
@@ -51,7 +58,7 @@
 						<th></th>
 					</tr>
 					<%
-						Weight[] weights = Controller.getInstance().getWeights(sheet);
+						Weight[] weights = (Weight[]) request.getAttribute("weights");
 							boolean isNotaFinal;
 							for (Weight weight : weights) {
 								if (weight != null && !weight.getName().equals("COMENTARIOS")) {

@@ -14,7 +14,7 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-2"></div>
-			<h1 class="col-md-8" style="text-align: center">ShowExcel</h1>
+			<h1 class="col-md-8" style="text-align: center"> <%= request.getAttribute("filename") %></h1>
 			<div class="col-md-2"></div>
 		</div>
 		<div class="row">

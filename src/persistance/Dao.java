@@ -28,17 +28,23 @@ public class Dao {
 	private static Dao instance;
 	private Workbook workbook;
 	// Home path
-	private String path = "C:\\Users\\alex\\Documents\\Eclipse\\datos\\ExcelTucom\\resources\\ShowExcel.xlsx";
+	private String path = "C:\\Users\\alex\\Documents\\Eclipse\\datos\\ExcelTucom\\resources\\";
 	// Laptop path
-	// private String path = "/home/alex/Eclipse/ExcelTucom/resources/ShowExcel.xlsx";
+	// private String path = "/home/alex/Eclipse/ExcelTucom/resources/";
+	
+	private String filename = "ShowExcel.xlsx";
 
 	/**
 	 * Creates the instance of this class.
 	 * @throws InvalidActionException excel file couldn't be opened.
 	 */
 	private Dao() throws InvalidActionException {
+		setWorkbook();
+	}
+	
+	private void setWorkbook() throws InvalidActionException {
 		try {
-			workbook = WorkbookFactory.create(new FileInputStream(new File(path)));
+			workbook = WorkbookFactory.create(new FileInputStream(new File(path + filename)));
 		} catch (EncryptedDocumentException | IOException e) {
 			throw new InvalidActionException(Tipo.READ_UNSUCCESSFUL);
 		}
@@ -106,7 +112,7 @@ public class Dao {
 	 * @throws InvalidActionException if the writing was not successful.
 	 */
 	public void commit() throws InvalidActionException {
-		try (FileOutputStream fileOut = new FileOutputStream(new File(path));) {
+		try (FileOutputStream fileOut = new FileOutputStream(new File(path + filename));) {
 		    workbook.write(fileOut);
 		} catch (IOException e) {
 			throw new InvalidActionException(Tipo.WRITE_UNSUCCESSFUL);
@@ -169,13 +175,11 @@ public class Dao {
 	 * @param value - weight for nota final.
 	 */
 	public void addColumn(int sheetNum, String name, String shorthand, double value) {
-		// Create cells first
 		Sheet sheet = workbook.getSheetAt(sheetNum);
 		int lastColumnIndex = sheet.getRow(0).getLastCellNum();
 		Iterator<Row> iterator = sheet.rowIterator();
 	    while (iterator.hasNext())
 	        iterator.next().createCell(lastColumnIndex, CellType.NUMERIC).setCellValue(0.0);
-	    // Fill weights
 	    Cell cellName = sheet.getRow(0).getCell(lastColumnIndex);
 	    cellName.setCellType(CellType.STRING);
 	    cellName.setCellValue(name);
@@ -186,5 +190,37 @@ public class Dao {
 	    cellShort.setCellType(CellType.STRING);
 	    cellShort.setCellValue(shorthand);
 	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public String getFileName() {
+		return filename.split("\\.")[0];
+	}
+	
+	public void setFilename(String filename) throws InvalidActionException {
+		this.filename = filename;
+		setWorkbook();
+	}
+
+	public int createNewSheet(String name) {
+		Sheet sheet = workbook.createSheet(name);
+		Row nameRow = sheet.createRow(0);
+		Cell notaFinalName = nameRow.createCell(2);
+		notaFinalName.setCellType(CellType.STRING);
+		notaFinalName.setCellValue("NOTA FINAL");
+		Row valueRow = sheet.createRow(1);
+		Cell notaFinalValue = valueRow.createCell(2);
+		notaFinalValue.setCellType(CellType.NUMERIC);
+		notaFinalValue.setCellValue(100);
+		Row shortRow = sheet.createRow(2);
+		Cell notaFinalShort = shortRow.createCell(2);
+		notaFinalShort.setCellType(CellType.STRING);
+		notaFinalShort.setCellValue("NF");
+		
+		return workbook.getSheetIndex(sheet);
+	}
+	
 
 }
